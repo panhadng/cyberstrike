@@ -1,0 +1,25 @@
+/* Custom cyber-scrollbar for scrollable containers */
+.cyber-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(59,130,246,0.3) transparent; /* blue-500 thumb, transparent track */
+}
+
+.cyber-scrollbar::-webkit-scrollbar {
+  width: 8px;
+}
+
+.cyber-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.cyber-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(59,130,246,0.3); /* blue-500 with opacity */
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  transition: background 0.2s;
+}
+
+.cyber-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(59,130,246,0.5);
+} 
