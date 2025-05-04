@@ -37,19 +37,23 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to access 
 
 ## Tech Stack
 
-- [Next.js 15](https://nextjs.org/) - React framework for production
+- [Next.js 15.3](https://nextjs.org/) - React framework for production
 - [React 19](https://react.dev/) - Frontend library
 - [TailwindCSS 4](https://tailwindcss.com/) - Utility-first CSS framework
 - [TypeScript](https://www.typescriptlang.org/) - Typed JavaScript
 - [React Icons](https://react-icons.github.io/react-icons/) - Icon library
+- [Radix UI](https://www.radix-ui.com/) - Unstyled, accessible UI components
+- [Lucide React](https://lucide.dev/) - Beautiful & consistent icon set
 
 ## Project Structure
 
 - `app/` - Main application code
   - `components/` - Reusable UI components
+  - `lib/` - Utility functions and helpers
   - `admin/` - Admin portal pages
   - `user/` - User portal pages
   - `data/` - Data models and services
+  - `styles/` - Global styles and theme configuration
 
 ## Learn More
 
@@ -58,6 +62,7 @@ To learn more about the technologies used in this project:
 - [Next.js Documentation](https://nextjs.org/docs) - Features and API
 - [React Documentation](https://react.dev/) - React library 
 - [TailwindCSS Documentation](https://tailwindcss.com/docs) - CSS framework
+- [Radix UI Documentation](https://www.radix-ui.com/docs/primitives/overview/introduction) - UI components
 
 ## Deployment
 
