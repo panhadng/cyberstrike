@@ -1,9 +1,7 @@
 import { useState } from "react";
 import {
   FaBrain,
-  FaChartLine,
   FaDatabase,
-  FaTools,
   FaCog,
   FaSync,
   FaServer,
@@ -221,7 +219,9 @@ const MLEngineering = () => {
                     </div>
 
                     {/* Data Distribution */}
-                    {model.type === "binary" ? (
+                    {model.type === "binary" &&
+                    model.trainingData.maliciousSamples &&
+                    model.trainingData.cleanSamples ? (
                       // Binary Classification Distribution
                       <div>
                         <p className="text-gray-400 mb-3">Data Distribution</p>
