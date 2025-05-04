@@ -10,7 +10,9 @@ export default function Home() {
         <div className="relative bg-black/40 backdrop-blur-xl rounded-3xl shadow-2xl p-12 flex flex-col items-center gap-8 w-full max-w-md border border-white/10">
           <Logo size="lg" className="mb-4" />
           <p className="text-center text-gray-400 mb-8 text-lg">
-            Next-gen malware detection prototype
+            Next-gen hybrid system for testing, detecting and classifying
+            malware of multiple types in EML and email files using AI and
+            Machine Learning to enhance performance.
           </p>
           <div className="flex flex-col gap-6 w-full">
             <Link href="/user" className="w-full group">
