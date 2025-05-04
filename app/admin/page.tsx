@@ -14,7 +14,7 @@ import { useState } from "react";
 // Import Admin Components
 import Dashboard from "../components/admin/Dashboard";
 import MLEngineering from "../components/admin/MLEngineering";
-import Analysis from "../components/admin/Analysis";
+import Analytics from "../components/admin/Analytics";
 import DataManagement from "../components/admin/DataManagement";
 import UserManagement from "../components/admin/UserManagement";
 import SystemSettings from "../components/admin/SystemSettings";
@@ -44,9 +44,9 @@ export default function AdminPortal() {
     },
     {
       icon: <FaChartLine />,
-      label: "Analysis",
-      value: "analysis",
-      active: activeTab === "analysis",
+      label: "Analytics",
+      value: "analytics",
+      active: activeTab === "analytics",
     },
     {
       icon: <FaDatabase />,
@@ -102,7 +102,7 @@ export default function AdminPortal() {
             {/* Dynamic content based on active tab */}
             {activeTab === "dashboard" && <Dashboard />}
             {activeTab === "ml" && <MLEngineering />}
-            {activeTab === "analysis" && <Analysis />}
+            {activeTab === "analytics" && <Analytics />}
             {activeTab === "data" && <DataManagement />}
             {activeTab === "users" && <UserManagement />}
             {activeTab === "settings" && <SystemSettings />}

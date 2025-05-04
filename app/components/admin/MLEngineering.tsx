@@ -46,7 +46,7 @@ const MLEngineering = () => {
   return (
     <div className="pb-8">
       <h2 className="text-3xl font-bold mb-8 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
-        ML Engineering
+        ML Engineering Panel
       </h2>
 
       {/* Performance View Toggle */}

@@ -39,7 +39,75 @@ export const dashboardData = {
       timestamp: "2 days ago",
       severity: "Medium",
     },
+    {
+      id: 5,
+      type: "userActivity",
+      action: "Updated profile settings",
+      username: "admin@example.com",
+      timestamp: "3 days ago"
+    }
   ],
+  threatsByRegion: [
+    {
+      name: "North America",
+      count: 42,
+      percentage: 38
+    },
+    {
+      name: "Europe",
+      count: 35,
+      percentage: 32
+    },
+    {
+      name: "Asia",
+      count: 23,
+      percentage: 21
+    },
+    {
+      name: "South America",
+      count: 6,
+      percentage: 5
+    },
+    {
+      name: "Africa",
+      count: 3,
+      percentage: 3
+    },
+    {
+      name: "Australia",
+      count: 1,
+      percentage: 1
+    }
+  ],
+  systemHealth: {
+    status: "operational",
+    services: [
+      {
+        name: "API Service",
+        status: "operational",
+        uptime: "99.9%"
+      },
+      {
+        name: "ML Service",
+        status: "operational",
+        uptime: "99.8%"
+      },
+      {
+        name: "Database",
+        status: "operational",
+        uptime: "100%"
+      },
+      {
+        name: "Security Services",
+        status: "operational",
+        uptime: "99.7%"
+      }
+    ],
+    metrics: {
+      responseTime: "124ms",
+      lastUpdate: "2 days ago"
+    }
+  }
 };
 
 // =============================================================================
@@ -200,38 +268,101 @@ export const analysisData = {
     { name: "Malware", value: 33 },
     { name: "Suspicious Links", value: 24 },
   ],
+  monthlyTrends: {
+    months: ["January", "February", "March", "April", "May", "June"],
+    phishing: [12, 15, 18, 22, 28, 32],
+    malware: [10, 12, 14, 18, 20, 22],
+    suspiciousLinks: [8, 10, 12, 14, 16, 18],
+  },
   recentDetections: [
     {
       id: 1,
-      fileName: "invoice.eml",
-      detectionTime: "2 hours ago",
+      fileName: "invoice_q2_2023.eml",
+      fileType: "Email Message",
+      fileSize: "24 KB",
+      detectionTime: "May 15, 2023 09:23 AM",
       threatType: "Phishing",
-      confidence: 98.2,
-      indicators: ["Suspicious sender", "Urgent language", "Credential request"],
+      confidence: 97,
+      indicators: ["Suspicious sender", "Urgency", "Spoofed domain"],
+      detectedThreats: ["Phishing", "Spoofed Domain"],
+      riskLevel: "High",
+      timestamp: "2 hours ago",
+      user: "john.doe@company.com",
+      detectionMethod: "Email Body Analysis",
+      sourceIP: "185.143.223.12",
+      threatIndicators: [
+        "Suspicious sender domain (invoice-secure.net)",
+        "Urgency language patterns detected",
+        "Contains suspicious redirect links",
+        "Domain registered in last 24 hours"
+      ]
     },
     {
       id: 2,
-      fileName: "report.docx",
-      detectionTime: "5 hours ago",
+      fileName: "report_march.eml",
+      fileType: "Email Message",
+      fileSize: "156 KB",
+      detectionTime: "May 14, 2023 14:45 PM",
       threatType: "Malware",
-      confidence: 99.5,
-      indicators: ["Embedded macros", "Known signature", "Suspicious behavior"],
+      confidence: 99,
+      indicators: ["Suspicious attachment", "Encoded payload", "Known signature"],
+      detectedThreats: ["Trojan", "Keylogger"],
+      riskLevel: "High",
+      timestamp: "1 day ago",
+      user: "sarah.smith@company.com",
+      detectionMethod: "Attachment Analysis",
+      sourceIP: "91.234.55.189",
+      threatIndicators: [
+        "Suspicious macro in attachment",
+        "Known malware signature detected",
+        "Attempts to disable security features",
+        "Encrypted payload detected"
+      ]
     },
     {
       id: 3,
-      fileName: "notification.eml",
-      detectionTime: "1 day ago",
-      threatType: "Suspicious Links",
-      confidence: 94.8,
-      indicators: ["Mismatched URL text", "Recently registered domain", "Abnormal path"],
+      fileName: "meeting_schedule.eml",
+      fileType: "Email Message",
+      fileSize: "18 KB",
+      detectionTime: "May 13, 2023 11:05 AM",
+      threatType: "Suspicious",
+      confidence: 87,
+      indicators: ["Suspicious links", "Uncommon sender"],
+      detectedThreats: ["Suspicious Link"],
+      riskLevel: "Medium",
+      timestamp: "2 days ago",
+      user: "michael.wong@company.com",
+      detectionMethod: "URL Analysis",
+      sourceIP: "209.58.128.43",
+      threatIndicators: [
+        "Links to suspicious domains",
+        "Redirect chain detected",
+        "Domain has poor reputation score"
+      ]
     },
-  ],
-  monthlyTrends: {
-    months: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    phishing: [12, 19, 15, 23, 28, 48],
-    malware: [8, 12, 15, 19, 22, 37],
-    suspiciousLinks: [5, 8, 12, 15, 18, 26],
-  },
+    {
+      id: 4,
+      fileName: "payment_confirmation.eml",
+      fileType: "Email Message",
+      fileSize: "12 KB",
+      detectionTime: "May 12, 2023 15:30 PM",
+      threatType: "Phishing",
+      confidence: 95,
+      indicators: ["Brand impersonation", "Suspicious links", "Data entry form"],
+      detectedThreats: ["Phishing", "Brand Impersonation"],
+      riskLevel: "High",
+      timestamp: "3 days ago",
+      user: "alex.johnson@company.com",
+      detectionMethod: "Content Analysis",
+      sourceIP: "45.227.255.82",
+      threatIndicators: [
+        "Impersonates financial institution",
+        "Contains credential harvesting form",
+        "Uses lookalike domain (paypa1.com)",
+        "Email header inconsistencies"
+      ]
+    }
+  ]
 };
 
 // =============================================================================
