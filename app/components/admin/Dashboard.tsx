@@ -11,12 +11,76 @@ import {
   FaFilter,
   FaDownload,
   FaDatabase,
+  FaLightbulb,
+  FaNetworkWired,
+  FaLock,
+  FaCloudUploadAlt,
+  FaRegChartBar,
 } from "react-icons/fa";
 import { useState } from "react";
+
+// Interface for AI Insights
+interface AdminAiInsight {
+  id: string;
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  statistic?: string;
+  change?: string;
+  changeType?: "positive" | "negative" | "neutral";
+  actionable: boolean;
+}
 
 const Dashboard = () => {
   const { stats, recentActivity, threatsByRegion } = dashboardData;
   const [timeframe, setTimeframe] = useState("day");
+  const [aiInsightsExpanded, setAiInsightsExpanded] = useState(true);
+
+  // Admin AI insights data
+  const adminAiInsights: AdminAiInsight[] = [
+    {
+      id: "1",
+      icon: <FaNetworkWired className="text-purple-400" />,
+      title: "New Malware Cluster Detected",
+      description:
+        "Our system has identified a new cluster of malware with similar characteristics targeting financial institutions.",
+      statistic: "32 samples",
+      change: "+128% increase",
+      changeType: "negative",
+      actionable: true,
+    },
+    {
+      id: "2",
+      icon: <FaLock className="text-blue-400" />,
+      title: "Model Vulnerability Found",
+      description:
+        "Current attachment classifier shows blind spots with password-protected RAR files containing obfuscated JavaScript.",
+      statistic: "8.4% false negatives",
+      change: "+3.2% from baseline",
+      changeType: "negative",
+      actionable: true,
+    },
+    {
+      id: "3",
+      icon: <FaRegChartBar className="text-green-400" />,
+      title: "Performance Optimization",
+      description:
+        "Based on usage patterns, switching to batch processing during peak hours could improve throughput by 35%.",
+      statistic: "35% potential gain",
+      changeType: "positive",
+      actionable: true,
+    },
+    {
+      id: "4",
+      icon: <FaCloudUploadAlt className="text-yellow-400" />,
+      title: "Training Data Recommendation",
+      description:
+        "Current model lacks sufficient samples of multi-stage phishing attachments. Recommend targeted collection.",
+      statistic: "500 samples needed",
+      changeType: "neutral",
+      actionable: true,
+    },
+  ];
 
   return (
     <div>
@@ -220,6 +284,100 @@ const Dashboard = () => {
               Most threats originate from North America and Europe
             </p>
           </div>
+        </div>
+      </div>
+
+      {/* AI Insights Section */}
+      <div className="mb-8">
+        <div className="flex justify-between items-center mb-4">
+          <div className="flex items-center gap-3">
+            <FaLightbulb className="text-2xl text-yellow-400" />
+            <h3 className="text-xl font-semibold text-white">AI Insights</h3>
+          </div>
+          <button
+            onClick={() => setAiInsightsExpanded(!aiInsightsExpanded)}
+            className="flex items-center gap-2 px-3 py-1 rounded-lg bg-black/30 hover:bg-black/50 transition-colors text-yellow-400"
+          >
+            {aiInsightsExpanded ? (
+              <span className="text-sm">Minimize</span>
+            ) : (
+              <span className="text-sm">Expand</span>
+            )}
+          </button>
+        </div>
+        <div className="bg-black/30 rounded-2xl p-6 border border-white/10">
+          <p className="text-gray-300 mb-4">
+            System-wide intelligence and actionable insights from our AI
+            analysis:
+          </p>
+
+          {aiInsightsExpanded && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {adminAiInsights.map((insight) => (
+                <div
+                  key={insight.id}
+                  className="bg-black/30 p-5 rounded-xl border border-white/10 hover:border-white/20 transition-all"
+                >
+                  <div className="flex items-start">
+                    <div className="p-3 rounded-lg bg-white/5 mr-4">
+                      {insight.icon}
+                    </div>
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-white mb-1">
+                        {insight.title}
+                      </h4>
+                      <p className="text-gray-300 text-sm mb-3">
+                        {insight.description}
+                      </p>
+
+                      {insight.statistic && (
+                        <div className="flex items-center gap-3 mb-3">
+                          <div className="text-white font-medium bg-white/5 px-3 py-1 rounded-md">
+                            {insight.statistic}
+                          </div>
+                          {insight.change && (
+                            <span
+                              className={`text-xs font-medium ${
+                                insight.changeType === "positive"
+                                  ? "text-green-400"
+                                  : insight.changeType === "negative"
+                                  ? "text-red-400"
+                                  : "text-blue-400"
+                              }`}
+                            >
+                              {insight.change}
+                            </span>
+                          )}
+                        </div>
+                      )}
+
+                      {insight.actionable && (
+                        <div className="flex gap-2">
+                          <button className="text-sm py-1 px-3 rounded-lg bg-blue-500/20 text-blue-400 hover:bg-blue-500/30 transition-colors">
+                            Take Action
+                          </button>
+                          <button className="text-sm py-1 px-3 rounded-lg bg-white/10 text-gray-300 hover:bg-white/20 transition-colors">
+                            Details
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {!aiInsightsExpanded && (
+            <div className="bg-black/20 rounded-xl p-4">
+              <div className="flex items-center gap-3 text-yellow-400">
+                <FaExclamationTriangle />
+                <p>
+                  4 insights available - 2 high priority items require attention
+                </p>
+              </div>
+            </div>
+          )}
         </div>
       </div>
 

@@ -14,9 +14,15 @@ import {
   FaBrain,
   FaChevronDown,
   FaChevronUp,
+  FaLightbulb,
+  FaChartBar,
+  FaDoorOpen,
+  FaExclamation,
+  FaServer,
 } from "react-icons/fa";
 import Layout from "../components/Layout";
 import { useState } from "react";
+import React from "react";
 import "../styles/scrollbar.css";
 
 interface ScanDetails {
@@ -53,6 +59,15 @@ interface FileHistoryItem {
   uploadDate: string;
 }
 
+interface AiInsight {
+  id: string;
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  severity: "high" | "medium" | "low";
+  actionable: boolean;
+}
+
 export default function UserPortal() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [scanResults, setScanResults] = useState<ScanResults | null>(null);
@@ -60,6 +75,7 @@ export default function UserPortal() {
   const [restrictToEml, setRestrictToEml] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [minimized, setMinimized] = useState(false);
+  const [insightsMinimized, setInsightsMinimized] = useState(false);
 
   // Dummy file history data
   const fileHistory: FileHistoryItem[] = [
@@ -97,6 +113,46 @@ export default function UserPortal() {
       status: "Clean",
       riskScore: 0.15,
       uploadDate: "3 days ago",
+    },
+  ];
+
+  // Dummy AI insights data
+  const aiInsights: AiInsight[] = [
+    {
+      id: "1",
+      icon: <FaServer className="text-red-400" />,
+      title: "Suspicious Domain Pattern",
+      description:
+        "40% of your malicious emails come from domains containing 'account-verify' or 'secure-login'",
+      severity: "high",
+      actionable: true,
+    },
+    {
+      id: "2",
+      icon: <FaExclamation className="text-yellow-400" />,
+      title: "Common Malware Type",
+      description:
+        "Phishing attempts make up 65% of detected threats, primarily requesting password resets",
+      severity: "medium",
+      actionable: false,
+    },
+    {
+      id: "3",
+      icon: <FaDoorOpen className="text-red-400" />,
+      title: "Backdoor Attempts",
+      description:
+        "Three recent emails contained backdoor software disguised as PDF invoice attachments",
+      severity: "high",
+      actionable: true,
+    },
+    {
+      id: "4",
+      icon: <FaChartBar className="text-blue-400" />,
+      title: "Weekly Threat Increase",
+      description:
+        "Malicious email detection has increased by 22% in the past week",
+      severity: "medium",
+      actionable: false,
     },
   ];
 
@@ -545,6 +601,87 @@ export default function UserPortal() {
               </div>
             </div>
           )}
+
+          {/* AI Insights Section */}
+          <div className="mb-12">
+            <div className="flex items-center justify-between mb-4">
+              <div className="flex items-center gap-3">
+                <FaLightbulb className="text-2xl text-yellow-400" />
+                <h3 className="text-xl font-semibold text-white">
+                  AI Insights
+                </h3>
+              </div>
+              <button
+                onClick={() => setInsightsMinimized(!insightsMinimized)}
+                className="flex items-center gap-2 px-3 py-1 rounded-lg bg-black/30 hover:bg-black/50 transition-colors text-yellow-400"
+              >
+                {insightsMinimized ? (
+                  <>
+                    <FaChevronDown className="text-sm" />
+                    <span className="text-sm">Expand</span>
+                  </>
+                ) : (
+                  <>
+                    <FaChevronUp className="text-sm" />
+                    <span className="text-sm">Minimize</span>
+                  </>
+                )}
+              </button>
+            </div>
+            <div className="bg-black/30 rounded-2xl p-6 border border-white/10">
+              <p className="text-gray-300 mb-4">
+                Based on your file upload history and scanning results, our AI
+                has detected the following patterns and insights:
+              </p>
+
+              {!insightsMinimized && (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {aiInsights.map((insight) => (
+                    <div
+                      key={insight.id}
+                      className={`p-4 rounded-xl border ${
+                        insight.severity === "high"
+                          ? "border-red-500/20 bg-red-900/10"
+                          : insight.severity === "medium"
+                          ? "border-yellow-500/20 bg-yellow-900/10"
+                          : "border-blue-500/20 bg-blue-900/10"
+                      }`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className="mt-1">{insight.icon}</div>
+                        <div>
+                          <h4 className="font-semibold text-white mb-1">
+                            {insight.title}
+                          </h4>
+                          <p className="text-gray-300 text-sm">
+                            {insight.description}
+                          </p>
+
+                          {insight.actionable && (
+                            <button className="mt-3 text-sm px-3 py-1 bg-purple-500/20 text-purple-300 rounded-lg hover:bg-purple-500/30 transition-colors">
+                              View Recommendations
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              {insightsMinimized && (
+                <div className="flex justify-center mt-2">
+                  <button
+                    onClick={() => setInsightsMinimized(false)}
+                    className="text-yellow-400 flex items-center gap-2 hover:underline"
+                  >
+                    <FaChevronDown />
+                    <span>Show all insights</span>
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
 
           {/* File History Section */}
           <div>
