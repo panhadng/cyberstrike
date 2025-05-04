@@ -49,46 +49,140 @@ export const mlEngineeringData = {
   models: [
     {
       id: 1,
-      name: "Email Classifier v2.1",
+      name: "Email Body Classifier",
+      type: "binary",
+      description: "Detects malware in email content",
       status: "Active",
       accuracy: 98.5,
+      precision: 97.8,
+      recall: 96.4,
+      f1Score: 97.1,
+      falsePositives: 2.2,
+      falseNegatives: 3.6,
       lastTrained: "2 days ago",
-      inputFeatures: ["Header analysis", "Body content", "Attachment scan", "Link analysis"],
-      technology: "Neural Network",
+      inputFeatures: ["Header analysis", "Body content", "Link analysis", "Sender reputation", "Language patterns"],
+      technology: "TF-IDF + Logistic Regression",
+      trainingData: {
+        totalSamples: 15400,
+        maliciousSamples: 5900,
+        cleanSamples: 9500,
+        lastUpdated: "2 days ago"
+      },
+      config: {
+        learningRate: 0.01,
+        maxIterations: 1000,
+        regularization: "L2",
+        regularizationStrength: 0.1,
+        trainTestSplit: 0.2,
+        crossValidation: true,
+        kFolds: 5,
+        featureSelection: ["TF-IDF", "N-grams", "Custom patterns"]
+      }
     },
     {
       id: 2,
-      name: "Attachment Scanner v1.5",
+      name: "Attachment Classifier",
+      type: "binary",
+      description: "Detects malware in email attachments",
       status: "Active",
       accuracy: 97.2,
+      precision: 98.5,
+      recall: 93.8,
+      f1Score: 96.1,
+      falsePositives: 1.5,
+      falseNegatives: 6.2,
       lastTrained: "5 days ago",
-      inputFeatures: ["File signature", "Content heuristics", "Behavior analysis"],
-      technology: "Random Forest",
+      inputFeatures: ["File signature", "Content heuristics", "Behavior analysis", "Entropy analysis", "Header structure"],
+      technology: "XGBoost",
+      trainingData: {
+        totalSamples: 12800,
+        maliciousSamples: 4900,
+        cleanSamples: 7900,
+        lastUpdated: "5 days ago"
+      },
+      config: {
+        learningRate: 0.1,
+        numEstimators: 300,
+        maxDepth: 6,
+        subsample: 0.8,
+        colsampleByTree: 0.8,
+        trainTestSplit: 0.25,
+        crossValidation: true,
+        kFolds: 3,
+        featureSelection: ["Content signatures", "Structural patterns", "Statistical measures"]
+      }
     },
     {
       id: 3,
-      name: "URL Classifier v1.2",
-      status: "In development",
+      name: "Malware Type Classifier",
+      type: "multi-class",
+      description: "Classifies detected threats by type",
+      status: "In Development",
       accuracy: 94.8,
+      precision: 92.3,
+      recall: 91.5,
+      f1Score: 91.9,
+      falsePositives: 7.7,
+      falseNegatives: 8.5,
       lastTrained: "1 week ago",
-      inputFeatures: ["Domain age", "SSL cert", "Reputation score", "Path analysis"],
-      technology: "Gradient Boosting",
-    },
+      inputFeatures: ["Threat patterns", "Behavior signatures", "Content analysis", "Distribution patterns"],
+      technology: "Random Forest",
+      trainingData: {
+        totalSamples: 9800,
+        classDistribution: {
+          "Phishing": 3200,
+          "Trojan": 2100,
+          "Ransomware": 1500,
+          "Spyware": 1800,
+          "Other": 1200
+        },
+        lastUpdated: "1 week ago"
+      },
+      config: {
+        numEstimators: 500,
+        maxDepth: 10,
+        minSamplesLeaf: 2,
+        minSamplesSplit: 5,
+        trainTestSplit: 0.3,
+        crossValidation: false,
+        kFolds: 0,
+        featureSelection: ["Behavior analysis", "Content patterns", "Distribution vectors"]
+      }
+    }
   ],
-  trainingData: {
-    totalSamples: 25600,
-    maliciousSamples: 9800,
-    cleanSamples: 15800,
-    lastUpdated: "3 days ago",
+  systemPerformance: {
+    accuracy: 96.8,
+    precision: 96.2,
+    recall: 93.9,
+    f1Score: 95.0,
+    falsePositives: 3.8,
+    falseNegatives: 6.1,
+    lastEvaluated: "1 day ago",
+    evaluationSet: "Production validation dataset (n=5000)"
   },
-  performanceMetrics: {
-    accuracy: 98.5,
-    precision: 97.8,
-    recall: 96.9,
-    f1Score: 97.3,
-    falsePositives: 2.2,
-    falseNegatives: 3.1,
-  },
+  recentTraining: [
+    {
+      modelId: 1,
+      event: "Model Retrained",
+      timestamp: "2 days ago",
+      performance: "+0.5% accuracy",
+      details: "Added 500 new samples to training data"
+    },
+    {
+      modelId: 2,
+      event: "Hyperparameter Tuning",
+      timestamp: "5 days ago",
+      performance: "+1.2% precision",
+      details: "Optimized max_depth and learning_rate"
+    },
+    {
+      modelId: 3,
+      event: "Feature Selection Update",
+      timestamp: "1 week ago",
+      performance: "+0.8% F1 score",
+      details: "Added new behavior analysis features"
+    }
+  ]
 };
 
 // =============================================================================
