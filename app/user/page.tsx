@@ -7,6 +7,13 @@ import {
   FaSearch,
   FaClock,
   FaEnvelopeOpenText,
+  FaInfoCircle,
+  FaCheckCircle,
+  FaPaperclip,
+  FaEnvelope,
+  FaBrain,
+  FaChevronDown,
+  FaChevronUp,
 } from "react-icons/fa";
 import Layout from "../components/Layout";
 import { useState } from "react";
@@ -17,16 +24,25 @@ interface ScanDetails {
   subject: string;
   attachments: string[];
   links: string[];
-  indicators: string[];
+  bodyIndicators: string[];
+  attachmentIndicators: string[];
   recommendations: string[];
 }
 
 interface ScanResults {
   fileName: string;
   timestamp: string;
+  bodyRiskScore: number;
+  attachmentRiskScore: number;
   riskScore: number;
+  malwareType: string;
   status: "Malicious" | "Clean";
   details: ScanDetails;
+  classifierInfo?: {
+    bodyClassifier: string;
+    attachmentClassifier: string;
+    malwareTypeClassifier: string;
+  };
 }
 
 interface FileHistoryItem {
@@ -43,6 +59,7 @@ export default function UserPortal() {
   const [isScanning, setIsScanning] = useState(false);
   const [restrictToEml, setRestrictToEml] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [minimized, setMinimized] = useState(false);
 
   // Dummy file history data
   const fileHistory: FileHistoryItem[] = [
@@ -102,18 +119,26 @@ export default function UserPortal() {
       setScanResults({
         fileName: selectedFile.name,
         timestamp: new Date().toISOString(),
+        bodyRiskScore: 0.62,
+        attachmentRiskScore: 0.91,
         riskScore: 0.85,
+        malwareType: "Phishing + Macro Malware",
         status: "Malicious",
         details: {
           sender: "suspicious@example.com",
           subject: "Urgent: Your Account Security Alert",
           attachments: ["invoice.pdf"],
           links: ["https://malicious-site.com"],
-          indicators: [
+          bodyIndicators: [
             "Suspicious sender domain",
-            "Contains malicious attachment",
-            "Suspicious links detected",
             "Urgency language used",
+            "Suspicious phrases: 'Urgent', 'Your Account'",
+            "Malicious link detected",
+          ],
+          attachmentIndicators: [
+            "Contains macro script",
+            "High entropy (possible obfuscation)",
+            "MIME type mismatch",
           ],
           recommendations: [
             "Do not open the attachment",
@@ -121,6 +146,11 @@ export default function UserPortal() {
             "Report to your IT department",
             "Update your email security settings",
           ],
+        },
+        classifierInfo: {
+          bodyClassifier: "TF-IDF + Logistic Regression",
+          attachmentClassifier: "Metadata + XGBoost",
+          malwareTypeClassifier: "XGBoost (Multi-class)",
         },
       });
       setIsScanning(false);
@@ -195,6 +225,326 @@ export default function UserPortal() {
               </div>
             </div>
           </div>
+
+          {/* Scan Results - Moved above File History */}
+          {scanResults && (
+            <div className="mb-12">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center gap-3">
+                  <FaShieldAlt className="text-2xl text-purple-400" />
+                  <h3 className="text-xl font-semibold text-white">
+                    Scan Results
+                  </h3>
+                </div>
+                <button
+                  onClick={() => setMinimized(!minimized)}
+                  className="flex items-center gap-2 px-3 py-1 rounded-lg bg-black/30 hover:bg-black/50 transition-colors text-purple-400"
+                >
+                  {minimized ? (
+                    <>
+                      <FaChevronDown className="text-sm" />
+                      <span className="text-sm">Expand</span>
+                    </>
+                  ) : (
+                    <>
+                      <FaChevronUp className="text-sm" />
+                      <span className="text-sm">Minimize</span>
+                    </>
+                  )}
+                </button>
+              </div>
+              <div className="bg-black/30 rounded-2xl p-6 border border-white/10">
+                {/* Basic Info - Always shown */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Basic Info */}
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-gray-400">File Name</p>
+                      <p className="text-white font-medium">
+                        {scanResults.fileName}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400">Scan Time</p>
+                      <p className="text-white font-medium">
+                        {new Date(scanResults.timestamp).toLocaleString()}
+                      </p>
+                    </div>
+
+                    {/* Risk Score Breakdown */}
+                    <div>
+                      <p className="text-gray-400 mb-2">Risk Score Breakdown</p>
+                      <div className="space-y-3 bg-black/20 p-3 rounded-lg">
+                        <div>
+                          <div className="flex justify-between mb-1">
+                            <p className="text-white text-sm">
+                              <FaEnvelope className="inline-block mr-2 text-white" />
+                              Email Body
+                            </p>
+                            <p className="text-white text-sm">
+                              {(scanResults.bodyRiskScore * 100).toFixed(1)}%
+                            </p>
+                          </div>
+                          <div className="w-full h-2 bg-gray-700 rounded-full">
+                            <div
+                              className={`h-full rounded-full ${
+                                scanResults.bodyRiskScore > 0.7
+                                  ? "bg-red-500"
+                                  : scanResults.bodyRiskScore > 0.3
+                                  ? "bg-yellow-500"
+                                  : "bg-green-500"
+                              }`}
+                              style={{
+                                width: `${scanResults.bodyRiskScore * 100}%`,
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="flex justify-between mb-1">
+                            <p className="text-white text-sm">
+                              <FaPaperclip className="inline-block mr-2 text-white" />
+                              Attachment
+                            </p>
+                            <p className="text-white text-sm">
+                              {(scanResults.attachmentRiskScore * 100).toFixed(
+                                1
+                              )}
+                              %
+                            </p>
+                          </div>
+                          <div className="w-full h-2 bg-gray-700 rounded-full">
+                            <div
+                              className={`h-full rounded-full ${
+                                scanResults.attachmentRiskScore > 0.7
+                                  ? "bg-red-500"
+                                  : scanResults.attachmentRiskScore > 0.3
+                                  ? "bg-yellow-500"
+                                  : "bg-green-500"
+                              }`}
+                              style={{
+                                width: `${
+                                  scanResults.attachmentRiskScore * 100
+                                }%`,
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                        <div>
+                          <div className="flex justify-between mb-1">
+                            <p className="text-white text-sm font-medium">
+                              <FaBrain className="inline-block mr-2 text-white" />
+                              Final Combined
+                            </p>
+                            <p className="text-white text-sm font-medium">
+                              {(scanResults.riskScore * 100).toFixed(1)}%
+                            </p>
+                          </div>
+                          <div className="w-full h-2 bg-gray-700 rounded-full">
+                            <div
+                              className={`h-full rounded-full ${
+                                scanResults.riskScore > 0.7
+                                  ? "bg-red-500"
+                                  : scanResults.riskScore > 0.3
+                                  ? "bg-yellow-500"
+                                  : "bg-green-500"
+                              }`}
+                              style={{
+                                width: `${scanResults.riskScore * 100}%`,
+                              }}
+                            ></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4">
+                      <div>
+                        <p className="text-gray-400">Status</p>
+                        <p
+                          className={`font-medium ${
+                            scanResults.status === "Malicious"
+                              ? "text-red-400"
+                              : "text-green-400"
+                          }`}
+                        >
+                          {scanResults.status}
+                        </p>
+                      </div>
+                      <div>
+                        <p className="text-gray-400">Malware Type</p>
+                        <p className="text-white font-medium">
+                          {scanResults.malwareType}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Detailed Analysis */}
+                  <div className="space-y-4">
+                    <div>
+                      <p className="text-gray-400">Sender</p>
+                      <p className="text-white font-medium">
+                        {scanResults.details.sender}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400">Subject</p>
+                      <p className="text-white font-medium">
+                        {scanResults.details.subject}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-gray-400">Attachments</p>
+                      <div className="flex flex-wrap gap-2">
+                        {scanResults.details.attachments.map(
+                          (attachment, index) => (
+                            <span
+                              key={index}
+                              className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm"
+                            >
+                              {attachment}
+                            </span>
+                          )
+                        )}
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-gray-400">Suspicious Links</p>
+                      <div className="flex flex-wrap gap-2">
+                        {scanResults.details.links.map((link, index) => (
+                          <span
+                            key={index}
+                            className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm"
+                          >
+                            {link}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Detailed content - only shown when not minimized */}
+                {!minimized && (
+                  <>
+                    {/* Detailed Indicators, grouped by source */}
+                    <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                      <div>
+                        <h4 className="text-lg font-semibold text-white mb-3">
+                          <FaEnvelope className="inline-block mr-2 text-purple-400" />{" "}
+                          Body Threat Indicators
+                        </h4>
+                        <ul className="space-y-2">
+                          {scanResults.details.bodyIndicators.map(
+                            (indicator, index) => (
+                              <li
+                                key={index}
+                                className="flex items-start gap-2"
+                              >
+                                <FaExclamationTriangle className="text-red-400 mt-1" />
+                                <span className="text-gray-300">
+                                  {indicator}
+                                </span>
+                              </li>
+                            )
+                          )}
+                        </ul>
+
+                        <h4 className="text-lg font-semibold text-white mb-3 mt-6">
+                          <FaPaperclip className="inline-block mr-2 text-purple-400" />{" "}
+                          Attachment Threat Indicators
+                        </h4>
+                        <ul className="space-y-2">
+                          {scanResults.details.attachmentIndicators.map(
+                            (indicator, index) => (
+                              <li
+                                key={index}
+                                className="flex items-start gap-2"
+                              >
+                                <FaExclamationTriangle className="text-red-400 mt-1" />
+                                <span className="text-gray-300">
+                                  {indicator}
+                                </span>
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </div>
+                      <div>
+                        <h4 className="text-lg font-semibold text-white mb-3">
+                          <FaInfoCircle className="inline-block mr-2 text-purple-400" />{" "}
+                          Recommendations
+                        </h4>
+                        <ul className="space-y-2">
+                          {scanResults.details.recommendations.map(
+                            (recommendation, index) => (
+                              <li
+                                key={index}
+                                className="flex items-start gap-2"
+                              >
+                                <FaCheckCircle className="text-green-400 mt-1" />
+                                <span className="text-gray-300">
+                                  {recommendation}
+                                </span>
+                              </li>
+                            )
+                          )}
+                        </ul>
+                      </div>
+                    </div>
+
+                    {/* Model Details (Optional, for advanced users) */}
+                    {scanResults.classifierInfo && (
+                      <div className="mt-8 bg-black/20 p-4 rounded-lg border border-white/5">
+                        <h4 className="text-md font-semibold text-white mb-3">
+                          <FaBrain className="inline-block mr-2 text-purple-400" />{" "}
+                          Advanced ML Details
+                        </h4>
+                        <div className="grid grid-cols-3 gap-4 text-sm">
+                          <div>
+                            <p className="text-gray-400">Body Classifier</p>
+                            <p className="text-white">
+                              {scanResults.classifierInfo.bodyClassifier}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-gray-400">
+                              Attachment Classifier
+                            </p>
+                            <p className="text-white">
+                              {scanResults.classifierInfo.attachmentClassifier}
+                            </p>
+                          </div>
+                          <div>
+                            <p className="text-gray-400">
+                              Malware Type Classifier
+                            </p>
+                            <p className="text-white">
+                              {scanResults.classifierInfo.malwareTypeClassifier}
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {/* Expand button if minimized */}
+                {minimized && (
+                  <div className="flex justify-center mt-4">
+                    <button
+                      onClick={() => setMinimized(false)}
+                      className="text-purple-400 flex items-center gap-2 hover:underline"
+                    >
+                      <FaChevronDown />
+                      <span>Show full scan details</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* File History Section */}
           <div>
@@ -282,149 +632,6 @@ export default function UserPortal() {
               </table>
             </div>
           </div>
-
-          {/* Scan Results */}
-          {scanResults && (
-            <div className="mt-12">
-              <div className="flex items-center gap-3 mb-4">
-                <FaShieldAlt className="text-2xl text-purple-400" />
-                <h3 className="text-xl font-semibold text-white">
-                  Scan Results
-                </h3>
-              </div>
-              <div className="bg-black/30 rounded-2xl p-6 border border-white/10">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {/* Basic Info */}
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-gray-400">File Name</p>
-                      <p className="text-white font-medium">
-                        {scanResults.fileName}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400">Scan Time</p>
-                      <p className="text-white font-medium">
-                        {new Date(scanResults.timestamp).toLocaleString()}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400">Risk Score</p>
-                      <div className="flex items-center gap-2">
-                        <div className="w-full h-2 bg-gray-700 rounded-full">
-                          <div
-                            className={`h-full rounded-full ${
-                              scanResults.riskScore > 0.7
-                                ? "bg-red-500"
-                                : scanResults.riskScore > 0.3
-                                ? "bg-yellow-500"
-                                : "bg-green-500"
-                            }`}
-                            style={{ width: `${scanResults.riskScore * 100}%` }}
-                          ></div>
-                        </div>
-                        <span className="text-white font-medium">
-                          {(scanResults.riskScore * 100).toFixed(1)}%
-                        </span>
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-gray-400">Status</p>
-                      <p
-                        className={`font-medium ${
-                          scanResults.status === "Malicious"
-                            ? "text-red-400"
-                            : "text-green-400"
-                        }`}
-                      >
-                        {scanResults.status}
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Detailed Analysis */}
-                  <div className="space-y-4">
-                    <div>
-                      <p className="text-gray-400">Sender</p>
-                      <p className="text-white font-medium">
-                        {scanResults.details.sender}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400">Subject</p>
-                      <p className="text-white font-medium">
-                        {scanResults.details.subject}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-gray-400">Attachments</p>
-                      <div className="flex flex-wrap gap-2">
-                        {scanResults.details.attachments.map(
-                          (attachment, index) => (
-                            <span
-                              key={index}
-                              className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm"
-                            >
-                              {attachment}
-                            </span>
-                          )
-                        )}
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-gray-400">Suspicious Links</p>
-                      <div className="flex flex-wrap gap-2">
-                        {scanResults.details.links.map((link, index) => (
-                          <span
-                            key={index}
-                            className="px-3 py-1 bg-red-500/20 text-red-400 rounded-full text-sm"
-                          >
-                            {link}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Indicators and Recommendations */}
-                <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div>
-                    <h4 className="text-lg font-semibold text-white mb-3">
-                      Threat Indicators
-                    </h4>
-                    <ul className="space-y-2">
-                      {scanResults.details.indicators.map(
-                        (indicator, index) => (
-                          <li key={index} className="flex items-start gap-2">
-                            <FaExclamationTriangle className="text-red-400 mt-1" />
-                            <span className="text-gray-300">{indicator}</span>
-                          </li>
-                        )
-                      )}
-                    </ul>
-                  </div>
-                  <div>
-                    <h4 className="text-lg font-semibold text-white mb-3">
-                      Recommendations
-                    </h4>
-                    <ul className="space-y-2">
-                      {scanResults.details.recommendations.map(
-                        (recommendation, index) => (
-                          <li key={index} className="flex items-start gap-2">
-                            <FaShieldAlt className="text-blue-400 mt-1" />
-                            <span className="text-gray-300">
-                              {recommendation}
-                            </span>
-                          </li>
-                        )
-                      )}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
       </div>
     </Layout>

@@ -400,18 +400,26 @@ export const userPortalData = {
   scanResults: {
     fileName: "invoice.eml",
     timestamp: new Date().toISOString(),
+    bodyRiskScore: 0.62,
+    attachmentRiskScore: 0.91,
     riskScore: 0.85,
+    malwareType: "Phishing + Macro Malware",
     status: "Malicious",
     details: {
       sender: "suspicious@example.com",
       subject: "Urgent: Your Account Security Alert",
       attachments: ["invoice.pdf"],
       links: ["https://malicious-site.com"],
-      indicators: [
+      bodyIndicators: [
         "Suspicious sender domain",
-        "Contains malicious attachment",
-        "Suspicious links detected",
-        "Urgency language used"
+        "Urgency language used",
+        "Suspicious phrases: 'Urgent', 'Your Account'",
+        "Malicious link detected"
+      ],
+      attachmentIndicators: [
+        "Contains macro script",
+        "High entropy (possible obfuscation)",
+        "MIME type mismatch"
       ],
       recommendations: [
         "Do not open the attachment",
@@ -419,6 +427,11 @@ export const userPortalData = {
         "Report to your IT department",
         "Update your email security settings"
       ]
+    },
+    classifierInfo: {
+      bodyClassifier: "TF-IDF + Logistic Regression",
+      attachmentClassifier: "Metadata + XGBoost",
+      malwareTypeClassifier: "XGBoost (Multi-class)"
     }
   }
 }; 
