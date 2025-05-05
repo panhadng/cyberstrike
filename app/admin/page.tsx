@@ -6,6 +6,7 @@ import {
   FaDatabase,
   FaUsers,
   FaCog,
+  FaFileAlt,
 } from "react-icons/fa";
 import Layout from "../components/Layout";
 import Logo from "../components/Logo";
@@ -18,6 +19,7 @@ import Analytics from "../components/admin/Analytics";
 import DataManagement from "../components/admin/DataManagement";
 import UserManagement from "../components/admin/UserManagement";
 import SystemSettings from "../components/admin/SystemSettings";
+import FileScanner from "../components/admin/FileScanner";
 
 interface SidebarItem {
   icon: React.ReactNode;
@@ -47,6 +49,12 @@ export default function AdminPortal() {
       label: "Analytics",
       value: "analytics",
       active: activeTab === "analytics",
+    },
+    {
+      icon: <FaFileAlt />,
+      label: "File Scanner",
+      value: "scanner",
+      active: activeTab === "scanner",
     },
     {
       icon: <FaDatabase />,
@@ -103,6 +111,7 @@ export default function AdminPortal() {
             {activeTab === "dashboard" && <Dashboard />}
             {activeTab === "ml" && <MLEngineering />}
             {activeTab === "analytics" && <Analytics />}
+            {activeTab === "scanner" && <FileScanner />}
             {activeTab === "data" && <DataManagement />}
             {activeTab === "users" && <UserManagement />}
             {activeTab === "settings" && <SystemSettings />}
